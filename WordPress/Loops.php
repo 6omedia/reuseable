@@ -3,6 +3,19 @@
 The Loop
 ***********************************************************************************************/
 
+<?php
+
+	$args = array(
+		'post_type' => $postType,
+		'category_name' => $cat, 
+		'posts_per_page' => 12,
+		'paged' => $paged
+	);
+
+	$query = new WP_Query( $args );
+
+?>
+
 <?php if( $query->have_posts() ) : while ( $query->have_posts() ) : $query->the_post(); ?>
 
 <?php endwhile; else : ?>

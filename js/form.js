@@ -1,3 +1,40 @@
+/*
+
+	const requiredFeilds = {
+		sendBtn: $('#submit_btn'),
+		errorBox: $('#errorMsg'),
+		successBox: $('#successBox'),
+		spinImg: $('#spin'),
+		requiredFeilds: [
+			{
+				feildName: 'Name',
+				elem: $('#qname'),
+				value: '',
+				error: 'Name required',
+				validation_type: '',
+				required: true
+			},
+			{
+				feildName: 'Email',
+				elem: $('#qemail'),
+				value: '',
+				error: 'Valid email required',
+				validation_type: 'email',
+				required: true
+			},
+			{
+				feildName: 'Website',
+				elem: $('#qwebsite'),
+				value: '',
+				validation_type: '',
+				required: false
+			}
+		]
+	}
+
+*/
+
+
 class Form {
 	
 	sendForm(callback){
@@ -26,12 +63,28 @@ class Form {
 		for(let i=length-1; i >= 0; i--){
 		
 			let currentFeild_value = requiredFeilds[i].elem.val();
+			let validationType = requiredFeilds[i].validation_type;
 
-			if(currentFeild_value != ""){
-				requiredFeilds[i].value = currentFeild_value;
-			}else{
-				this.invalidate(requiredFeilds[i]);
-				valid = false;
+			switch(validationType){
+			    case 'email':
+			        
+			    	if(currentFeild_value === '' || currentFeild_value.indexOf('@') == -1){
+			    		this.invalidate(requiredFeilds[i]);
+						valid = false;
+			    	}else{
+			    		requiredFeilds[i].value = currentFeild_value;
+			    	}
+
+			        break;
+			    default:
+
+			    	if(currentFeild_value != ""){
+						requiredFeilds[i].value = currentFeild_value;
+					}else{
+						this.invalidate(requiredFeilds[i]);
+						valid = false;
+					}    
+
 			}
 
 		}
@@ -41,7 +94,7 @@ class Form {
 	}
 
 	invalidate(feildObj){
-		feildObj.elem.addClass('invalid');
+		feildObj.elem.addClass('invalid').focus();
 		this.errorBox.html(feildObj.error).slideDown(400);
 	}
 

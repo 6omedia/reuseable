@@ -1,6 +1,4 @@
 <?php
-
-	// find what kind of email from POST email type eg... jingle, radioad or contact form
 	
 	header('Content-Type: application/json');
 
