@@ -89,3 +89,15 @@ img {
     vertical-align: middle;
     margin-left: 3px;
 }
+
+/* Limit Lines */
+
+.giveMeEllipsis p {
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 3; /* number of lines to show */
+ /*  line-height: ;         fallback 
+   max-height: X*N;        fallback */
+}

@@ -1,0 +1,53 @@
+function restrict_articles_by_merchant($post_type){
+
+	global $typenow;
+    if( $typenow == 'affproducts' ){
+
+    	global $wpdb;
+	    $merchants = $wpdb->get_results("
+	        SELECT $wpdb->posts.id, $wpdb->posts.post_title
+		    FROM $wpdb->posts
+		    WHERE $wpdb->posts.post_status = 'publish' 
+		    AND $wpdb->posts.post_type = 'merchants'
+		    ORDER BY $wpdb->posts.post_date DESC
+	    ");
+
+    	echo '<select name="merchant">';
+    	echo '<option value="">All Merchants</option>';
+    	foreach ($merchants as $merchant) {
+    		$selected = '';
+    		if(isset($_GET['merchant'])){
+    			if(trim($merchant->id) == trim($_GET['merchant'])){
+    				$selected = 'selected';
+    			}
+    		}
+    		echo '<option value="' . $merchant->id . ' "' .  $selected . '>' . $merchant->post_title . '</option>';
+    	}
+    	echo '</select>';
+
+    }
+
+}
+
+function modify_filter_merchants( $query ){
+
+    global $typenow;
+    global $pagenow;
+
+    if( $pagenow == 'edit.php' && $typenow == 'affproducts' && isset($_GET['merchant']) ){
+
+        $query->set( 'meta_query', array(
+	        	array(
+		            'key'     => 'merchantids',
+		            'value' => $_GET['merchant'],
+        			'compare' => 'LIKE'
+		        )
+		    )
+	    );
+
+    }
+
+}
+
+add_action( 'restrict_manage_posts', array($this, 'restrict_articles_by_merchant') );
+add_filter( 'parse_query', array( $this, 'modify_filter_merchants' ) );

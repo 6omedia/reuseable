@@ -66,7 +66,6 @@ class Popup {
 
 	popDown(){
 
-		console.log('popdocdcsdwn');
 		$('.c_modal').remove();
 		$('.c_modal').off();
 

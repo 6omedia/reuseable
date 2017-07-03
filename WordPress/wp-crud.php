@@ -48,6 +48,11 @@
 
 // last id
 
+// Delete
+
+	global $wpdb; 
+	$wpdb->delete( $wpdb->prefix . 'px_downloads', array( 'id' => $_POST['download_id'] ) );
+
 
 
 ?>
