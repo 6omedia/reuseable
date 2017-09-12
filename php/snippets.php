@@ -44,3 +44,23 @@ number_format($price, 2);
 usort($this->merchants, function($a, $b){
 	return $a['price'] - $b['price'];
 });
+
+/*** filtering arrays ***/
+
+function getUniqueItems($initArray, $key){
+
+	$newArray = [];
+	$unqiue = [];
+
+	foreach($initArray as $item) {
+
+		if(!in_array($item[$key], $unqiue)){
+			$unqiue[] = $item[$key];
+			$newArray[] = $item;
+		}
+
+	}
+
+	return $newArray;
+
+}

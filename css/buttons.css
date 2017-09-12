@@ -1,0 +1,19 @@
+
+.btnStyle1 {
+	background: linear-gradient(#ff9f38, #ffba70);
+    color: #ffffff;
+    font-size: 20px;
+    padding: 5px 15px;
+    box-shadow: inset 0px 7px 10px -5px rgb(255, 243, 229);
+}
+
+.btnStyle1:hover {
+	color: #fff;
+	box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.2);
+}
+
+.btnStyle1:active {
+	background: linear-gradient(#ff9f38, #ffba70);
+	box-shadow: none;
+}
+

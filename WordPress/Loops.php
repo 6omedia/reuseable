@@ -21,9 +21,6 @@ The Loop
 <?php endwhile; else : ?>
 <?php endif; ?>
 
-	
-
-
 /* 
 
 Loop Through categories and subcategories
