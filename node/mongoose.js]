@@ -1,0 +1,9 @@
+User.update({'email': 'mark@mark.com'}, {
+	$set: {
+		websites: []
+	}
+}, function(err, affectedObj){
+	
+	done();
+	
+});

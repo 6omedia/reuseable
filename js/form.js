@@ -1,89 +1,93 @@
 /*
 
-	const requiredFeilds = {
-		sendBtn: $('#submit_btn'),
-		errorBox: $('#errorMsg'),
-		successBox: $('#successBox'),
-		spinImg: $('#spin'),
-		requiredFeilds: [
-			{
-				feildName: 'Name',
-				elem: $('#qname'),
-				value: '',
-				error: 'Name required',
-				validation_type: '',
-				required: true
-			},
-			{
-				feildName: 'Email',
-				elem: $('#qemail'),
-				value: '',
-				error: 'Valid email required',
-				validation_type: 'email',
-				required: true
-			},
-			{
-				feildName: 'Website',
-				elem: $('#qwebsite'),
-				value: '',
-				validation_type: '',
-				required: false
-			}
-		]
-	}
+Form(url, fields)
+
+Description: provides validation and methods for an ajax form
+
+Funtions:
+	
+	Contructor(url, fields)
+
+		~~| url = string of the url the form is being sent to
+
+		~~| fields = an array of objects. each object contains...
+					 id: 'q_email',       (string: of the form elements id)  
+					 validation: 'none'   (string: of the type of validation. This could be...
+					 						'', 'email', 'password' or 'none')
+
+	send(data, callback)
+
+		~~| data = data object for ajax call or '' for it to use buildSimpleFormData()
+
+		~~| callback = function to call when ajax returns a response
+
+	buildSimpleFormData()
+	
+		-- returns a data object with values from the Forms fields.
 
 */
 
+var form = (function(){
 
-class Form {
-	
-	sendForm(callback){
+	var exports = {};
+
+	var Form = function(url, fields){
+		this.url = url;
+		this.fields = fields;
+		this.message = 'Required fields missing';
+		// this.emailFormat = "/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/";
+	};
+
+	Form.prototype.isValid = function(){
+
 		this.resetValidation();
-		const valid = this.isFormValid(this.requiredFeilds);
-		if(valid){
-			this.disableSubmit();
-			callback();
-		}
-	}
-	
-	disableSubmit(){
-		this.sendBtn.hide();
-	}
 
-	enableSubmit(){
-		this.sendBtn.show();
-	}
+		var valid = true;
 
-	isFormValid(requiredFeilds){
+		for(i = this.fields.length-1; i >= 0; i--){
 
-		const length = requiredFeilds.length;
+			var field = this.fields[i];
 
-		let valid = true;
+			var fieldElem = $('#' + this.fields[i].id);
+			var fieldValue = fieldElem.val();
 
-		for(let i=length-1; i >= 0; i--){
-		
-			let currentFeild_value = requiredFeilds[i].elem.val();
-			let validationType = requiredFeilds[i].validation_type;
+			if(field.validation != 'none'){
 
-			switch(validationType){
-			    case 'email':
-			        
-			    	if(currentFeild_value === '' || currentFeild_value.indexOf('@') == -1){
-			    		this.invalidate(requiredFeilds[i]);
+				if(field.validation == 'email'){
+
+					if(fieldValue == ''){
+						this.invalidate(fieldElem);
 						valid = false;
-			    	}else{
-			    		requiredFeilds[i].value = currentFeild_value;
-			    	}
-
-			        break;
-			    default:
-
-			    	if(currentFeild_value != ""){
-						requiredFeilds[i].value = currentFeild_value;
-					}else{
-						this.invalidate(requiredFeilds[i]);
+					}else if(!(fieldValue.indexOf('@') > -1 && fieldValue.indexOf('.') > -1)){
+						this.invalidate(fieldElem, 'Enter a valid email');
 						valid = false;
-					}    
+					}
+
+				}else if(field.validation == 'password'){
+
+					if(fieldValue == ''){
+						this.invalidate(fieldElem);
+						valid = false;
+					}
+
+					if(fieldValue != $('#' + this.fields[i-1].id).val()){
+						this.invalidate(fieldElem, 'Passwords do not match');
+						valid = false;
+					}
+
+				}else if(typeof(field.validation) == 'function'){
+
+					if(!field.validation()){
+						this.invalidate(fieldElem, '');
+						valid = false;
+					}					
+
+				}else{
+					if(fieldValue == ''){
+						this.invalidate(fieldElem);
+						valid = false;
+					}
+				}
 
 			}
 
@@ -91,30 +95,66 @@ class Form {
 
 		return valid;
 
-	}
+	};
 
-	invalidate(feildObj){
-		feildObj.elem.addClass('invalid').focus();
-		this.errorBox.html(feildObj.error).slideDown(400);
-	}
+	Form.prototype.invalidate = function(elem, message){
 
-	resetValidation(){
+		elem.addClass('invalid');
 
-		this.errorBox.html('').slideUp();
-
-		const length = this.requiredFeilds.length;
-		for(let i=0; i< length; i++){
-			this.requiredFeilds[i].elem.removeClass('invalid');
+		if(message != undefined){
+			this.message = message;
 		}
 
-	}
+	};
 
-	constructor(data){
-		this.sendBtn = data.sendBtn;
-		this.errorBox = data.errorBox;
-		this.successBox = data.successBox;
-		this.spinImg = data.spinImg;
-		this.error = '';
-		this.requiredFeilds = data.requiredFeilds;
-	}
-}
+	Form.prototype.send = function(data, callback){
+
+		if(data == ''){
+			data = this.buildSimpleFormData();
+		}
+		var url = this.url;
+
+		// console.log(url);
+
+		$.ajax({
+			url: url,
+			type: 'POST',
+			dataType: 'json',
+			data: data,
+			success: function(data){
+				callback(data);
+			},
+			error: function(xhr, desc, err){
+				console.log(xhr, desc, err);
+				callback(xhr);
+			}
+		});
+
+	};
+
+	Form.prototype.resetValidation = function(){
+
+		for(i=0; i<this.fields.length; i++){
+			var elem = $('#' + this.fields[i].id);
+			elem.removeClass('invalid');
+		}
+
+	};
+
+	Form.prototype.buildSimpleFormData = function(){
+
+		var data = {};
+
+		for(i=0; i<this.fields.length; i++){
+			data[this.fields[i].id] = $('#' + this.fields[i].id).val();
+		} 
+
+		return data;
+
+	};
+
+	exports.Form = Form;
+
+	return exports;
+
+}());
