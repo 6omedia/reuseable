@@ -114,8 +114,6 @@ var form = (function(){
 		}
 		var url = this.url;
 
-		// console.log(url);
-
 		$.ajax({
 			url: url,
 			type: 'POST',
@@ -125,8 +123,13 @@ var form = (function(){
 				callback(data);
 			},
 			error: function(xhr, desc, err){
-				console.log(xhr, desc, err);
-				callback(xhr);
+				var obj = {error: xhr.status + ' ' + xhr.statusText};
+				if(xhr.responseJSON){
+					if(xhr.responseJSON.error){
+						obj.error = xhr.responseJSON.error;
+					}
+				}
+				callback(obj);
 			}
 		});
 
@@ -137,6 +140,16 @@ var form = (function(){
 		for(i=0; i<this.fields.length; i++){
 			var elem = $('#' + this.fields[i].id);
 			elem.removeClass('invalid');
+		}
+
+	};
+
+	Form.prototype.resetForm = function(){
+
+		for(i=0; i<this.fields.length; i++){
+			var elem = $('#' + this.fields[i].id);
+			elem.removeClass('invalid');
+			elem.val('');
 		}
 
 	};
@@ -153,7 +166,7 @@ var form = (function(){
 
 	};
 
-	exports.Form = Form;
+	exports.form = Form;
 
 	return exports;
 

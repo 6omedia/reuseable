@@ -1,0 +1,18 @@
+$checkered-size: 50px;
+
+@mixin checkered {
+    background-image:
+        -moz-linear-gradient(45deg, #000 25%, transparent 25%), 
+        -moz-linear-gradient(-45deg, #000 25%, transparent 25%),
+        -moz-linear-gradient(45deg, transparent 75%, #000 75%),
+        -moz-linear-gradient(-45deg, transparent 75%, #000 75%);
+    background-image:
+        -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #000), color-stop(.25, transparent)), 
+        -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #000), color-stop(.25, transparent)),
+        -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #000)),
+        -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #000));
+    -moz-background-size: $checkered-size $checkered-size;
+    background-size: $checkered-size $checkered-size;
+    -webkit-background-size: $checkered-size $checkered-size + 1; /* override value for shitty webkit */
+    background-position:0 0, ($checkered-size / 2) 0, ($checkered-size / 2) ($checkered-size - ($checkered-size / 2)), 0px ($checkered-size / 2);
+}

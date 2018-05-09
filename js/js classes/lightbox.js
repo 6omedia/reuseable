@@ -23,23 +23,34 @@
 
 	.cb_lightbox img {
 	    max-width: 80%;
+	    height: 45px;
+	    object-fit: cover;
+	    width: 75px;
+	}
+
+	.cb_lightbox .current {
+	    width: 100%;
+	    height: 100%;
+	    object-fit: contain;
+	    object-position: center;
 	}
 
 	.cb_lightbox .box {
 	    display: inline-block;
+	    background: #000;
+	    width: 80%;
+	    height: 80%;
 	}
 
 	.cb_lightbox .left,
 	.cb_lightbox .right {
-	    width: 25px;
-	    height: 35px;
 	    display: inline-block;
-	    background: darkorange;
+	    width: 50px;
+	    height: 75px;
 	}
 
 	.cb_lightbox .right,
 	.cb_lightbox .left {
-	    filter: invert();
 	    background-size: contain;
 	}   
 
@@ -52,14 +63,19 @@
 	}
 
 	.cb_gallerythumbnails {
-	    padding: 0px;
-	    margin: 10px auto;
-	    max-width: 600px;
+	    width: 100%;
+	    position: absolute;
+	    bottom: 0px;
+	    text-align: center;
+	    left: 0px;
+	    background: #000;
+	    padding: 15px;
+	    margin: 0px;
 	}
 
 	.cb_gallerythumbnails li {
 	    display: inline-block;
-	    width: 45px;
+	    width: 80px;
 	}
 
 	.cb_current_img img {
@@ -80,7 +96,7 @@ var LightBox = (function(){
 		this.left = $('<div class="left">');
 		this.right = $('<div class="right">');
 
-		this.image = $('<img src="">');
+		this.image = $('<img src="" class="current">');
 
 		this.left.on('click', function(){
 			thisLb.prev();
